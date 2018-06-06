@@ -44,7 +44,7 @@
 // console.log(util.isRegExp(people1));
 // console.log(util.isDate(people1));
 // console.log(util.isError(new Error()));
-const fs = require('fs');
+// const fs = require('fs');
 
 // console.log('准备打开文件');
 // //异步打开文件
@@ -107,26 +107,56 @@ const fs = require('fs');
 //         });
 //     });
 // });
-console.log('创建目录  test/');
-fs.mkdir("test/", (err) => {
-    if (err) {
-        console.error(err);
-    };
-    console.log('目录创建成功');
-});
-console.log('查看deploy目录');
-fs.readdir('deploy/', (err, files) => {
-    if (err) {
-        console.error(err);
-    };
-    files.forEach((file) => {
-        console.log(file);
+// console.log('创建目录  test/');
+// fs.mkdir("test/", (err) => {
+//     if (err) {
+//         console.error(err);
+//     };
+//     console.log('目录创建成功');
+// });
+// console.log('查看deploy目录');
+// fs.readdir('deploy/', (err, files) => {
+//     if (err) {
+//         console.error(err);
+//     };
+//     files.forEach((file) => {
+//         console.log(file);
+//     })
+// });
+// console.log('准备删除目录test/');
+// fs.rmdir('test', (err) => {
+//     if (err) {
+//         console.error(err);
+//     };
+//     console.log('目录test删除成功');
+// })
+
+const http = require('http');
+const querystring = require('querystring');
+var postHTML = '<html><head><title>菜鸟教程</title><meta charset="utf-8"></head><body><form method="post">网站名：<input name="name"></br>网址：<input name="url"><input type="submit"></form></body></html>';
+// var postHTML =
+//     '<html><head><meta charset="utf-8"><title>菜鸟教程 Node.js 实例</title></head>' +
+//     '<body>' +
+//     '<form method="post">' +
+//     '网站名： <input name="name"><br>' +
+//     '网站 URL： <input name="url"><br>' +
+//     '<input type="submit">' +
+//     '</form>' +
+//     '</body></html>';
+http.createServer((req, res) => {
+    var body = '';
+    req.on('data', (chunk) => {
+        body += chunk;
+    });
+    req.on('end', () => {
+
+        body = querystring.parse(body);
+        res.writeHead(200, { 'Content-Type': 'text/html;charset=utf-8' });
+        if (body.name && body.url) { // 输出提交的数据
+            res.write("网站名：" + body.name + '</br>');
+            res.end("网站 URL：" + body.url);
+        } else { // 输出表单
+            res.end(postHTML);
+        }
     })
-});
-console.log('准备删除目录test/');
-fs.rmdir('test', (err) => {
-    if (err) {
-        console.error(err);
-    };
-    console.log('目录test删除成功');
-})
+}).listen(3000);
